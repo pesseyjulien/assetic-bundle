@@ -25,6 +25,8 @@
     </parameters>
 
     <services>
+        <defaults autowire="true" autoconfigure="true" public="true" />
+
         <!-- managers -->
         <service id="assetic.filter_manager" class="%assetic.filter_manager.class%">
             <argument type="service" id="service_container" />

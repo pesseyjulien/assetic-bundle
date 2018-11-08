@@ -9,7 +9,7 @@ twig:
 
 assetic:
     use_controller: true
-    read_from:      "%kernel.root_dir%/web"
+    read_from:      "%kernel.root_dir%/public"
     bundles:        [ TestBundle ]
     assets:
         jquery: js/jquery.js

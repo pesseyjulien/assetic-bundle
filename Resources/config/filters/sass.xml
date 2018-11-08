@@ -12,14 +12,14 @@
         <parameter key="assetic.filter.sass.compass">null</parameter>
         <parameter key="assetic.filter.sass.precision">null</parameter>
         <parameter key="assetic.filter.sass.load_paths" type="collection">
-            <parameter>%kernel.root_dir%/../web</parameter>
+            <parameter>%kernel.root_dir%/../public</parameter>
         </parameter>
         <parameter key="assetic.filter.sass.cache_location">%kernel.cache_dir%</parameter>
         <parameter key="assetic.filter.sass.enable_sourcemaps">null</parameter>
     </parameters>
 
     <services>
-        <service id="assetic.filter.sass" class="%assetic.filter.sass.class%">
+        <service id="assetic.filter.sass" class="%assetic.filter.sass.class%" public="true">
             <tag name="assetic.filter" alias="sass" />
             <argument>%assetic.filter.sass.bin%</argument>
             <argument>%assetic.ruby.bin%</argument>
