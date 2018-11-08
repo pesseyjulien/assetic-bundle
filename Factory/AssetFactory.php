@@ -32,14 +32,15 @@ class AssetFactory extends BaseAssetFactory
      *
      * @param KernelInterface       $kernel       The kernel is used to parse bundle notation
      * @param ContainerInterface    $container    The container is used to load the managers lazily, thus avoiding a circular dependency
+     * @param ParameterBagInterface $parameterBag The container parameter bag
      * @param string                $baseDir      The base directory for relative inputs
      * @param Boolean               $debug        The current debug mode
      */
-    public function __construct(KernelInterface $kernel, ContainerInterface $container, $baseDir, $debug = false)
+    public function __construct(KernelInterface $kernel, ContainerInterface $container, ParameterBagInterface $parameterBag, $baseDir, $debug = false)
     {
         $this->kernel = $kernel;
         $this->container = $container;
-        $this->parameterBag = $this->container->get('parameter_bag');
+        $this->parameterBag = $parameterBag;
 
         parent::__construct($baseDir, $debug);
     }

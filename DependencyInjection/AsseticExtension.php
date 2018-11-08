@@ -39,7 +39,7 @@ class AsseticExtension extends Extension
         $loader->load('templating_twig.xml');
         $loader->load('templating_php.xml');
 
-        $def = $container->getDefinition('parameter_bag');
+        $def = $container->getDefinition('assetic.parameter_bag');
         if (method_exists($def, 'setFactory')) {
             // to be inlined in assetic.xml when dependency on Symfony DependencyInjection is bumped to 2.6
             $def->setFactory(array(new Reference('service_container'), 'getParameterBag'));

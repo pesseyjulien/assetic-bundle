@@ -40,6 +40,7 @@
         <service id="assetic.asset_factory" class="%assetic.asset_factory.class%" public="false">
             <argument type="service" id="kernel" />
             <argument type="service" id="service_container" />
+            <argument type="service" id="assetic.parameter_bag" />
             <argument>%assetic.read_from%</argument>
             <argument>%assetic.debug%</argument>
         </service>
@@ -67,6 +68,8 @@
         </service>
 
         <service id="assetic.worker.cache_busting" class="%assetic.worker.cache_busting.class%" public="false" />
+
+        <service id="assetic.parameter_bag" class="Symfony\Component\DependencyInjection\ParameterBag\ContainerBag" public="false"/>
 
         <service id="assetic.value_supplier.default" class="%assetic.value_supplier.class%" public="false">
             <argument type="service" id="service_container" />
