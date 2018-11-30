@@ -50,5 +50,5 @@
             "url":  "git@github.com:crassula/assetic.git",
             "no-api": true
         }
-    ],
+    ]
 }
