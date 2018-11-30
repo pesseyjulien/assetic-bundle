@@ -43,12 +43,5 @@
         "branch-alias": {
             "dev-master": "2.8-dev"
         }
-    },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url":  "git@github.com:crassula/assetic.git",
-            "no-api": true
-        }
-    ]
+    }
 }
