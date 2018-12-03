@@ -76,5 +76,13 @@
         </service>
 
         <service id="assetic.value_supplier" alias="assetic.value_supplier.default" public="false" />
+
+        <service id="assetic.dump_command" class="Symfony\Bundle\AsseticBundle\Command\DumpCommand" public="true">
+            <tag name="console.command" />
+        </service>
+        
+        <service id="assetic.watch_command" class="Symfony\Bundle\AsseticBundle\Command\WatchCommand" public="true">
+            <tag name="console.command" />
+        </service>
     </services>
 </container>
