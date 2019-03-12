@@ -15,13 +15,23 @@ use Assetic\Extension\Twig\AsseticFilterFunction;
 use Symfony\Bundle\AsseticBundle\Exception\InvalidBundleException;
 use Symfony\Bundle\FrameworkBundle\Templating\TemplateReference;
 use Symfony\Component\Templating\TemplateNameParserInterface;
+use Twig\Environment;
+use Twig\Node\Expression\ArrayExpression;
+use Twig\Node\Expression\ConditionalExpression;
+use Twig\Node\Expression\ConstantExpression;
+use Twig\Node\Expression\FunctionExpression;
+use Twig\Node\Expression\GetAttrExpression;
+use Twig\Node\Expression\NameExpression;
+use Twig\Node\Node;
+use Twig\NodeVisitor\AbstractNodeVisitor;
+use Twig\Template;
 
 /**
  * Assetic node visitor.
  *
  * @author Kris Wallsmith <kris@symfony.com>
  */
-class AsseticNodeVisitor extends \Twig_BaseNodeVisitor
+class AsseticNodeVisitor extends AbstractNodeVisitor
 {
     private $templateNameParser;
     private $enabledBundles;
@@ -32,12 +42,12 @@ class AsseticNodeVisitor extends \Twig_BaseNodeVisitor
         $this->enabledBundles = $enabledBundles;
     }
 
-    protected function doEnterNode(\Twig_Node $node, \Twig_Environment $env)
+    protected function doEnterNode(Node $node, Environment $env)
     {
         return $node;
     }
 
-    protected function doLeaveNode(\Twig_Node $node, \Twig_Environment $env)
+    protected function doLeaveNode(Node $node, Environment $env)
     {
         if (!$formula = $this->checkNode($node, $env, $name)) {
             return $node;
@@ -54,24 +64,24 @@ class AsseticNodeVisitor extends \Twig_BaseNodeVisitor
         $line = $node->getLine();
 
         // check context and call either asset() or path()
-        return new \Twig_Node_Expression_Conditional(
-            new \Twig_Node_Expression_GetAttr(
-                new \Twig_Node_Expression_Name('assetic', $line),
-                new \Twig_Node_Expression_Constant('use_controller', $line),
-                new \Twig_Node_Expression_Array(array(), 0),
-                \Twig_Template::ARRAY_CALL,
+        return new ConditionalExpression(
+            new GetAttrExpression(
+                new NameExpression('assetic', $line),
+                new ConstantExpression('use_controller', $line),
+                new ArrayExpression(array(), 0),
+                Template::ARRAY_CALL,
                 $line
             ),
-            new \Twig_Node_Expression_Function(
+            new FunctionExpression(
                 'path',
-                new \Twig_Node(array(
-                    new \Twig_Node_Expression_Constant('_assetic_'.$options['name'], $line),
+                new Node(array(
+                    new ConstantExpression('_assetic_'.$options['name'], $line),
                 )),
                 $line
             ),
-            new \Twig_Node_Expression_Function(
+            new FunctionExpression(
                 'asset',
-                new \Twig_Node(array($node, new \Twig_Node_Expression_Constant(isset($options['package']) ? $options['package'] : null, $line))),
+                new Node(array($node, new ConstantExpression(isset($options['package']) ? $options['package'] : null, $line))),
                 $line
             ),
             $line
@@ -83,9 +93,9 @@ class AsseticNodeVisitor extends \Twig_BaseNodeVisitor
      *
      * @return array|null The formula
      */
-    private function checkNode(\Twig_Node $node, \Twig_Environment $env, &$name = null)
+    private function checkNode(Node $node, Environment $env, &$name = null)
     {
-        if ($node instanceof \Twig_Node_Expression_Function) {
+        if ($node instanceof FunctionExpression) {
             $name = $node->getAttribute('name');
             if ($env->getFunction($name) instanceof AsseticFilterFunction) {
                 $arguments = array();

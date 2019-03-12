@@ -13,6 +13,14 @@ namespace Symfony\Bundle\AsseticBundle\Twig;
 
 use Assetic\Asset\AssetInterface;
 use Assetic\Extension\Twig\AsseticNode as BaseAsseticNode;
+use Twig\Compiler;
+use Twig\Node\Expression\ArrayExpression;
+use Twig\Node\Expression\ConstantExpression;
+use Twig\Node\Expression\FunctionExpression;
+use Twig\Node\Expression\GetAttrExpression;
+use Twig\Node\Expression\NameExpression;
+use Twig\Node\Node;
+use Twig\Template;
 
 /**
  * Assetic node.
@@ -21,24 +29,24 @@ use Assetic\Extension\Twig\AsseticNode as BaseAsseticNode;
  */
 class AsseticNode extends BaseAsseticNode
 {
-    protected function compileAssetUrl(\Twig_Compiler $compiler, AssetInterface $asset, $name)
+    protected function compileAssetUrl(Compiler $compiler, AssetInterface $asset, $name)
     {
         $vars = array();
         foreach ($asset->getVars() as $var) {
-            $vars[] = new \Twig_Node_Expression_Constant($var, $this->getTemplateLine());
+            $vars[] = new ConstantExpression($var, $this->getTemplateLine());
 
             // Retrieves values of assetic vars from the context, $context['assetic']['vars'][$var].
-            $vars[] = new \Twig_Node_Expression_GetAttr(
-                new \Twig_Node_Expression_GetAttr(
-                    new \Twig_Node_Expression_Name('assetic', $this->getTemplateLine()),
-                    new \Twig_Node_Expression_Constant('vars', $this->getTemplateLine()),
-                    new \Twig_Node_Expression_Array(array(), $this->getTemplateLine()),
-                    \Twig_Template::ARRAY_CALL,
+            $vars[] = new GetAttrExpression(
+                new GetAttrExpression(
+                    new NameExpression('assetic', $this->getTemplateLine()),
+                    new ConstantExpression('vars', $this->getTemplateLine()),
+                    new ArrayExpression(array(), $this->getTemplateLine()),
+                    Template::ARRAY_CALL,
                     $this->getTemplateLine()
                 ),
-                new \Twig_Node_Expression_Constant($var, $this->getTemplateLine()),
-                new \Twig_Node_Expression_Array(array(), $this->getTemplateLine()),
-                \Twig_Template::ARRAY_CALL,
+                new ConstantExpression($var, $this->getTemplateLine()),
+                new ArrayExpression(array(), $this->getTemplateLine()),
+                Template::ARRAY_CALL,
                 $this->getTemplateLine()
             );
         }
@@ -52,15 +60,15 @@ class AsseticNode extends BaseAsseticNode
 
     private function getPathFunction($name, array $vars = array())
     {
-        $nodes = array(new \Twig_Node_Expression_Constant('_assetic_'.$name, $this->getTemplateLine()));
+        $nodes = array(new ConstantExpression('_assetic_'.$name, $this->getTemplateLine()));
 
         if (!empty($vars)) {
-            $nodes[] = new \Twig_Node_Expression_Array($vars, $this->getTemplateLine());
+            $nodes[] = new ArrayExpression($vars, $this->getTemplateLine());
         }
 
-        return new \Twig_Node_Expression_Function(
+        return new FunctionExpression(
             'path',
-            new \Twig_Node($nodes),
+            new Node($nodes),
             $this->getTemplateLine()
         );
     }
@@ -70,12 +78,12 @@ class AsseticNode extends BaseAsseticNode
         $arguments = array($path);
 
         if ($this->hasAttribute('package')) {
-            $arguments[] = new \Twig_Node_Expression_Constant($this->getAttribute('package'), $this->getTemplateLine());
+            $arguments[] = new ConstantExpression($this->getAttribute('package'), $this->getTemplateLine());
         }
 
-        return new \Twig_Node_Expression_Function(
+        return new FunctionExpression(
             'asset',
-            new \Twig_Node($arguments),
+            new Node($arguments),
             $this->getTemplateLine()
         );
     }
@@ -94,7 +102,7 @@ class TargetPathNode extends AsseticNode
         $this->name = $name;
     }
 
-    public function compile(\Twig_Compiler $compiler)
+    public function compile(Compiler $compiler)
     {
         BaseAsseticNode::compileAssetUrl($compiler, $this->asset, $this->name);
     }
