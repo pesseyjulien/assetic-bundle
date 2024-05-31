@@ -89,7 +89,7 @@ abstract class AsseticHelper extends Helper
      * @param array|string $filters An array or comma-separated list of filter names
      * @param array        $options An array of options
      *
-     * @return array An array of URLs for the asset
+     * @return |Traversable An iterable of URLs for the asset
      */
     private function getAssetUrls($inputs = array(), $filters = array(), array $options = array())
     {
@@ -140,7 +140,7 @@ abstract class AsseticHelper extends Helper
     }
 
     /**
-     * Returns an URL for the supplied asset.
+     * Returns a URL for the supplied asset.
      *
      * @param AssetInterface $asset   An asset
      * @param array          $options An array of options

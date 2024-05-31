@@ -13,7 +13,7 @@ namespace Symfony\Bundle\AsseticBundle\Twig;
 
 use Assetic\Extension\Twig\AsseticFilterFunction;
 use Symfony\Bundle\AsseticBundle\Exception\InvalidBundleException;
-use Symfony\Bundle\FrameworkBundle\Templating\TemplateReference;
+use Symfony\Bundle\AsseticBundle\Templating\TemplateReference;
 use Symfony\Component\Templating\TemplateNameParserInterface;
 use Twig\Environment;
 use Twig\Node\Expression\ArrayExpression;
@@ -23,7 +23,7 @@ use Twig\Node\Expression\FunctionExpression;
 use Twig\Node\Expression\GetAttrExpression;
 use Twig\Node\Expression\NameExpression;
 use Twig\Node\Node;
-use Twig\NodeVisitor\AbstractNodeVisitor;
+use Twig\NodeVisitor\NodeVisitorInterface;
 use Twig\Template;
 
 /**
@@ -31,7 +31,7 @@ use Twig\Template;
  *
  * @author Kris Wallsmith <kris@symfony.com>
  */
-class AsseticNodeVisitor extends AbstractNodeVisitor
+class AsseticNodeVisitor implements NodeVisitorInterface
 {
     private $templateNameParser;
     private $enabledBundles;
@@ -42,25 +42,25 @@ class AsseticNodeVisitor extends AbstractNodeVisitor
         $this->enabledBundles = $enabledBundles;
     }
 
-    protected function doEnterNode(Node $node, Environment $env)
+    public function enterNode(Node $node, Environment $env): Node
     {
         return $node;
     }
 
-    protected function doLeaveNode(Node $node, Environment $env)
+    public function leaveNode(Node $node, Environment $env): ?Node
     {
         if (!$formula = $this->checkNode($node, $env, $name)) {
             return $node;
         }
 
         // check the bundle
-        $templateRef = $this->templateNameParser->parse($env->getParser()->getStream()->getFilename());
+        $templateRef = $this->templateNameParser->parse($node->getSourceContext()->getName());
         $bundle = $templateRef instanceof TemplateReference ? $templateRef->get('bundle') : null;
         if ($bundle && !in_array($bundle, $this->enabledBundles)) {
             throw new InvalidBundleException($bundle, "the $name() function", $templateRef->getLogicalName(), $this->enabledBundles);
         }
 
-        list($input, $filters, $options) = $formula;
+        [$input, $filters, $options] = $formula;
         $line = $node->getLine();
 
         // check context and call either asset() or path()
@@ -117,6 +117,8 @@ class AsseticNodeVisitor extends AbstractNodeVisitor
                 return array($inputs, $filters, $options);
             }
         }
+
+        return null;
     }
 
     public function getPriority()

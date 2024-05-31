@@ -11,6 +11,7 @@
 
 namespace Symfony\Bundle\AsseticBundle\Command;
 
+use Assetic\AssetManager;
 use Spork\Batch\Strategy\ChunkStrategy;
 use Spork\EventDispatcher\WrappedEventDispatcher;
 use Spork\ProcessManager;
@@ -20,6 +21,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Dumps assets to the filesystem.
@@ -28,7 +30,26 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class DumpCommand extends AbstractCommand
 {
+    /** @var ProcessManager */
     private $spork;
+    /** @var EventDispatcherInterface */
+    private $eventDispatcher;
+    private bool $debug;
+
+    /**
+     * @param AssetManager             $am
+     * @param string                   $basePath
+     * @param array<mixed>             $globalVars
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param bool                     $debug
+     */
+    public function __construct(AssetManager $am, $basePath, $globalVars, EventDispatcherInterface $eventDispatcher, $debug)
+    {
+        parent::__construct($am, $basePath, $globalVars);
+
+        $this->eventDispatcher = $eventDispatcher;
+        $this->debug = $debug;
+    }
 
     protected function configure()
     {
@@ -55,9 +76,9 @@ class DumpCommand extends AbstractCommand
             }
 
             $this->spork = new ProcessManager(
-                new WrappedEventDispatcher($this->getContainer()->get('event_dispatcher')),
+                new WrappedEventDispatcher($this->eventDispatcher),
                 null,
-                $this->getContainer()->getParameter('kernel.debug')
+                $this->debug
             );
         }
 
@@ -118,5 +139,7 @@ class DumpCommand extends AbstractCommand
                 $this->dumpAsset($name, $stdout);
             }
         }
+
+        return 0;
     }
 }

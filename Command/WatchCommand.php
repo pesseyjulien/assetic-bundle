@@ -11,6 +11,7 @@
 
 namespace Symfony\Bundle\AsseticBundle\Command;
 
+use Assetic\AssetManager;
 use Assetic\Util\VarUtils;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -25,6 +26,16 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class WatchCommand extends AbstractCommand
 {
+    /**
+     * @param AssetManager $am
+     * @param string       $basePath
+     * @param array<mixed> $globalVars
+     */
+    public function __construct(AssetManager $am, $basePath, $globalVars)
+    {
+        parent::__construct($am, $basePath, $globalVars);
+    }
+
     protected function configure()
     {
         $this
@@ -101,7 +112,7 @@ class WatchCommand extends AbstractCommand
 
         $combinations = VarUtils::getCombinations(
             $asset->getVars(),
-            $this->getContainer()->getParameter('assetic.variables')
+            $this->globalVars
         );
 
         $mtime = 0;

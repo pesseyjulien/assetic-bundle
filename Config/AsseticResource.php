@@ -11,7 +11,7 @@
 
 namespace Symfony\Bundle\AsseticBundle\Config;
 
-use Assetic\Factory\Resource\ResourceInterface as AsseticResourceInterface;
+use Assetic\Contracts\Factory\Resource\ResourceInterface as AsseticResourceInterface;
 use Symfony\Component\Config\Resource\ResourceInterface as SymfonyResourceInterface;
 
 /**

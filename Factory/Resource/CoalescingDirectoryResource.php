@@ -11,8 +11,8 @@
 
 namespace Symfony\Bundle\AsseticBundle\Factory\Resource;
 
+use Assetic\Contracts\Factory\Resource\ResourceInterface;
 use Assetic\Factory\Resource\CoalescingDirectoryResource as BaseCoalescingDirectoryResource;
-use Assetic\Factory\Resource\ResourceInterface;
 
 /**
  * Coalesces multiple directories together into one merged resource.

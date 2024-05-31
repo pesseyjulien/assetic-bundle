@@ -13,7 +13,7 @@
     <services>
         <service id="assetic.helper.dynamic" class="%assetic.helper.dynamic.class%">
             <tag name="assetic.templating.php" />
-            <argument type="service" id="templating.helper.router" />
+            <argument type="service" id="router" />
             <argument type="service" id="assetic.asset_factory" />
         </service>
 

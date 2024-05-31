@@ -12,7 +12,7 @@
 namespace Symfony\Bundle\AsseticBundle\Factory\Worker;
 
 use Assetic\Asset\AssetInterface;
-use Assetic\Factory\Worker\WorkerInterface;
+use Assetic\Contracts\Factory\Worker\WorkerInterface;
 use Assetic\Factory\AssetFactory;
 
 /**

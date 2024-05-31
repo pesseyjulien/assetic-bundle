@@ -13,21 +13,38 @@ namespace Symfony\Bundle\AsseticBundle\Command;
 
 use Assetic\Asset\AssetCollectionInterface;
 use Assetic\Asset\AssetInterface;
+use Assetic\AssetManager;
+use Assetic\Factory\LazyAssetManager;
 use Assetic\Util\VarUtils;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-abstract class AbstractCommand extends ContainerAwareCommand
+abstract class AbstractCommand extends Command
 {
+    /** @var AssetManager */
     protected $am;
+    /** @var string */
     protected $basePath;
+    /** @var array<string, mixed> */
+    protected $globalVars;
+
+    /**
+     * @param LazyAssetManager $am
+     * @param string           $basePath
+     * @param array            $globalVars
+     */
+    public function __construct(AssetManager $am, $basePath, $globalVars)
+    {
+        $this->am = $am;
+        $this->basePath = $basePath;
+        $this->globalVars = $globalVars;
+
+        parent::__construct();
+    }
 
     protected function initialize(InputInterface $input, OutputInterface $stdout)
     {
-        $this->am = $this->getContainer()->get('assetic.asset_manager');
-
-        $this->basePath = $this->getContainer()->getParameter('assetic.write_to');
         if ($input->hasArgument('write_to') && $basePath = $input->getArgument('write_to')) {
             $this->basePath = $basePath;
         }
@@ -67,13 +84,13 @@ abstract class AbstractCommand extends ContainerAwareCommand
      * @param AssetInterface  $asset  An asset
      * @param OutputInterface $stdout The command output
      *
-     * @throws RuntimeException If there is a problem writing the asset
+     * @throws \RuntimeException If there is a problem writing the asset
      */
     private function doDump(AssetInterface $asset, OutputInterface $stdout)
     {
         $combinations = VarUtils::getCombinations(
             $asset->getVars(),
-            $this->getContainer()->getParameter('assetic.variables')
+            $this->globalVars
         );
 
         foreach ($combinations as $combination) {

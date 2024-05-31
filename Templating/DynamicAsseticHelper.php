@@ -13,7 +13,7 @@ namespace Symfony\Bundle\AsseticBundle\Templating;
 
 use Assetic\Asset\AssetInterface;
 use Assetic\Factory\AssetFactory;
-use Symfony\Bundle\FrameworkBundle\Templating\Helper\RouterHelper;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * The dynamic "assetic" templating helper.
@@ -22,25 +22,23 @@ use Symfony\Bundle\FrameworkBundle\Templating\Helper\RouterHelper;
  */
 class DynamicAsseticHelper extends AsseticHelper
 {
-    private $routerHelper;
+    private $urlGenerator;
 
     /**
      * Constructor.
      *
-     * @param RouterHelper $routerHelper The router helper
+     * @param UrlGeneratorInterface $urlGenerator The URL generator
      * @param AssetFactory $factory      The asset factory
      */
-    public function __construct(RouterHelper $routerHelper, AssetFactory $factory)
+    public function __construct(UrlGeneratorInterface $urlGenerator, AssetFactory $factory)
     {
-        $this->routerHelper = $routerHelper;
+        $this->urlGenerator = $urlGenerator;
 
         parent::__construct($factory);
     }
 
     protected function getAssetUrl(AssetInterface $asset, $options = array())
     {
-        return !method_exists($this->routerHelper, 'path')
-            ? $this->routerHelper->generate('_assetic_'.$options['name'])
-            : $this->routerHelper->path('_assetic_'.$options['name']);
+        return $this->urlGenerator->generate('_assetic_'.$options['name']);
     }
 }

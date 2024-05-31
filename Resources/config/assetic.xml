@@ -78,10 +78,18 @@
         <service id="assetic.value_supplier" alias="assetic.value_supplier.default" public="false" />
 
         <service id="assetic.dump_command" class="Symfony\Bundle\AsseticBundle\Command\DumpCommand" public="true">
+            <argument type="service" id="assetic.asset_manager" />
+            <argument>%assetic.write_to%</argument>
+            <argument>%assetic.variables%</argument>
+            <argument type="service" id="event_dispatcher" />
+            <argument>%assetic.debug%</argument>
             <tag name="console.command" />
         </service>
-        
+
         <service id="assetic.watch_command" class="Symfony\Bundle\AsseticBundle\Command\WatchCommand" public="true">
+            <argument type="service" id="assetic.asset_manager" />
+            <argument>%assetic.write_to%</argument>
+            <argument>%assetic.variables%</argument>
             <tag name="console.command" />
         </service>
     </services>

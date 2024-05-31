@@ -7,14 +7,17 @@
     <parameters>
         <parameter key="assetic.twig_extension.class">Symfony\Bundle\AsseticBundle\Twig\AsseticExtension</parameter>
         <parameter key="assetic.twig_formula_loader.class">Assetic\Extension\Twig\TwigFormulaLoader</parameter>
+        <parameter key="assetic.templating.name_parser">Symfony\Bundle\AsseticBundle\Templating\TemplateNameParser</parameter>
     </parameters>
-
     <services>
+        <service id="assetic.templating.name_parser" class="%assetic.templating.name_parser%" public="false">
+            <argument type="service" id="kernel" />
+        </service>
         <service id="assetic.twig_extension" class="%assetic.twig_extension.class%" public="false">
             <tag name="twig.extension" />
             <tag name="assetic.templating.twig" />
             <argument type="service" id="assetic.asset_factory" />
-            <argument type="service" id="templating.name_parser" />
+            <argument type="service" id="assetic.templating.name_parser" />
             <argument>%assetic.use_controller%</argument>
             <argument>%assetic.twig_extension.functions%</argument>
             <argument>%assetic.bundles%</argument>
