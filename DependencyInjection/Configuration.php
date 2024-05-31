@@ -46,9 +46,10 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $builder = new TreeBuilder();
         $finder = new ExecutableFinder();
-        $rootNode = $builder->root('assetic');
+
+        $treeBuilder = new TreeBuilder('assetic');
+        $rootNode = $treeBuilder->getRootNode();
 
         $rootNode
             ->children()
@@ -82,7 +83,7 @@ class Configuration implements ConfigurationInterface
         $this->addWorkersSection($rootNode);
         $this->addTwigSection($rootNode);
 
-        return $builder;
+        return $treeBuilder;
     }
 
     private function addVariablesSection(ArrayNodeDefinition $rootNode)

@@ -13,6 +13,7 @@ namespace Symfony\Bundle\AsseticBundle\Twig;
 
 use Assetic\Asset\AssetInterface;
 use Assetic\Extension\Twig\AsseticNode as BaseAsseticNode;
+use Twig\Attribute\YieldReady;
 use Twig\Compiler;
 use Twig\Node\Expression\ArrayExpression;
 use Twig\Node\Expression\ConstantExpression;
@@ -27,6 +28,7 @@ use Twig\Template;
  *
  * @author Kris Wallsmith <kris@symfony.com>
  */
+#[YieldReady]
 class AsseticNode extends BaseAsseticNode
 {
     protected function compileAssetUrl(Compiler $compiler, AssetInterface $asset, $name)
