@@ -18,7 +18,7 @@
         "symfony/dependency-injection": "~2.3|~3.0|~4.0",
         "symfony/console": "~2.3|~3.0|~4.0",
         "symfony/yaml": "~2.3|~3.0|~4.0",
-        "assetic/framework": "^2.x"
+        "assetic/framework": "2.x"
     },
     "require-dev": {
         "patchwork/jsqueeze": "~1.0",
